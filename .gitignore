@@ -1,0 +1,33 @@
+# Models, datasets, images, and generated results
+models/
+sdxl_models/
+DPT/
+IP-Adapter/
+ip_adapter/
+data/
+demo_assets/
+outputs/
+flagged/
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+*.bin
+
+# Local environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.cache/
+.gradio/
+*.log
+.env
+.env.*
+
+# Local experiment artifacts
+test.png
+soft_mask_heatmap.png
+index.html
