@@ -31,3 +31,9 @@ __pycache__/
 test.png
 soft_mask_heatmap.png
 index.html
+
+# Packaging and test artifacts
+*.egg-info/
+.pytest_cache/
+build/
+dist/
