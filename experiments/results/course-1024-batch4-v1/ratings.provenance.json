@@ -1,0 +1,10 @@
+{
+  "rater": "User_AI_assisted",
+  "protocol": "AI-assisted human review",
+  "human_rater_count": 1,
+  "user_attestation": "User states they personally reviewed all ratings and retained all AI initial scores.",
+  "prior_ai_scores_visible": true,
+  "independent_blind_review_complete": false,
+  "score_origin": "AI initial visual assessment, retained after user review",
+  "original_sha256": "66dcdea3cd9354752e2df1c4d4a7c63f51b0784f9975a435c6137d7c63810352"
+}

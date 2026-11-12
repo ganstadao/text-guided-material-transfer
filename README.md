@@ -140,7 +140,7 @@ material_transfer/     配置、图像处理、分割／深度、特征融合、
 configs/               四组配置（其他参数见 TransferConfig）
 tests/                 轻量数据流与张量／文件协议验证，不下载权重
 scripts/               模型下载工具
-experiments/           历史独立探针；非正式实验入口、不作为 pytest 用例
+experiments/           四组消融编排、结果汇总与历史独立探针（见该目录 README）
 run_batch.py           批量 CLI 兼容入口
 demo_gradio.py         统一 API 的可选 UI
 ```

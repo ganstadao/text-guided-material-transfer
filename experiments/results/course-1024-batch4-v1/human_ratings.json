@@ -1,0 +1,78 @@
+{
+  "completed": 96,
+  "incomplete": 0,
+  "raters": [
+    "User_AI_assisted"
+  ],
+  "groups": {
+    "A": {
+      "material_match": {
+        "n": 24,
+        "mean": 3.5416666666666665
+      },
+      "shape": {
+        "n": 24,
+        "mean": 4.666666666666667
+      },
+      "naturalness": {
+        "n": 24,
+        "mean": 2.9583333333333335
+      }
+    },
+    "B": {
+      "material_match": {
+        "n": 24,
+        "mean": 3.6666666666666665
+      },
+      "shape": {
+        "n": 24,
+        "mean": 4.666666666666667
+      },
+      "naturalness": {
+        "n": 24,
+        "mean": 2.75
+      }
+    },
+    "C": {
+      "material_match": {
+        "n": 24,
+        "mean": 3.2916666666666665
+      },
+      "shape": {
+        "n": 24,
+        "mean": 4.708333333333333
+      },
+      "naturalness": {
+        "n": 24,
+        "mean": 3.2916666666666665
+      }
+    },
+    "D": {
+      "material_match": {
+        "n": 24,
+        "mean": 3.4166666666666665
+      },
+      "shape": {
+        "n": 24,
+        "mean": 4.708333333333333
+      },
+      "naturalness": {
+        "n": 24,
+        "mean": 3.3333333333333335
+      }
+    }
+  },
+  "rating_provenance": [
+    {
+      "rater": "User_AI_assisted",
+      "protocol": "AI-assisted human review",
+      "human_rater_count": 1,
+      "user_attestation": "User states they personally reviewed all ratings and retained all AI initial scores.",
+      "prior_ai_scores_visible": true,
+      "independent_blind_review_complete": false,
+      "score_origin": "AI initial visual assessment, retained after user review",
+      "original_sha256": "66dcdea3cd9354752e2df1c4d4a7c63f51b0784f9975a435c6137d7c63810352"
+    }
+  ],
+  "independent_blind_review_complete": false
+}

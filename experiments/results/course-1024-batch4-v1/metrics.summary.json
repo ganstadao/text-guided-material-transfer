@@ -1,0 +1,127 @@
+{
+  "expected_runs": 96,
+  "completed_runs": 96,
+  "missing_runs": 0,
+  "invalid_runs": 0,
+  "protocols": {
+    "background_alignment": "RGB Lanczos; binary mask nearest to result size",
+    "ssim": "Rec709 luminance; exclude foreground-touching Gaussian windows",
+    "lpips": "spatial AlexNet; neutralize foreground equally; average background map",
+    "reference_gt_status": "assistant_draft",
+    "clip_model": "F:\\Text-guided Material Transfer\\models\\local\\clip-vit-base-patch32"
+  },
+  "versions": {
+    "numpy": "1.26.4",
+    "Pillow": "11.3.0",
+    "scipy": "1.14.1",
+    "torch": "2.5.1+cu124",
+    "lpips": "0.1.4",
+    "transformers": "4.46.3"
+  },
+  "groups": {
+    "A": {
+      "bg_mae": {
+        "n": 24,
+        "mean": 0.00822749348784176
+      },
+      "bg_ssim": {
+        "n": 24,
+        "mean": 0.9697210192680359
+      },
+      "ref_iou": {
+        "n": 0,
+        "mean": null
+      },
+      "ref_dice": {
+        "n": 0,
+        "mean": null
+      },
+      "clip_sim": {
+        "n": 24,
+        "mean": 0.7188463633259138
+      },
+      "bg_lpips": {
+        "n": 24,
+        "mean": 0.028087049451035757
+      }
+    },
+    "B": {
+      "bg_mae": {
+        "n": 24,
+        "mean": 0.00824054004624486
+      },
+      "bg_ssim": {
+        "n": 24,
+        "mean": 0.9698025609056155
+      },
+      "ref_iou": {
+        "n": 24,
+        "mean": 0.965976834153703
+      },
+      "ref_dice": {
+        "n": 24,
+        "mean": 0.9826312805369244
+      },
+      "clip_sim": {
+        "n": 24,
+        "mean": 0.7144656603535017
+      },
+      "bg_lpips": {
+        "n": 24,
+        "mean": 0.028409211081452668
+      }
+    },
+    "C": {
+      "bg_mae": {
+        "n": 24,
+        "mean": 0.008136172201678468
+      },
+      "bg_ssim": {
+        "n": 24,
+        "mean": 0.9697295154134432
+      },
+      "ref_iou": {
+        "n": 0,
+        "mean": null
+      },
+      "ref_dice": {
+        "n": 0,
+        "mean": null
+      },
+      "clip_sim": {
+        "n": 24,
+        "mean": 0.7094491347670555
+      },
+      "bg_lpips": {
+        "n": 24,
+        "mean": 0.026827329711522907
+      }
+    },
+    "D": {
+      "bg_mae": {
+        "n": 24,
+        "mean": 0.008056332560954615
+      },
+      "bg_ssim": {
+        "n": 24,
+        "mean": 0.9698027720053991
+      },
+      "ref_iou": {
+        "n": 24,
+        "mean": 0.965976834153703
+      },
+      "ref_dice": {
+        "n": 24,
+        "mean": 0.9826312805369244
+      },
+      "clip_sim": {
+        "n": 24,
+        "mean": 0.7082932814955711
+      },
+      "bg_lpips": {
+        "n": 24,
+        "mean": 0.026418105815537274
+      }
+    }
+  }
+}

@@ -17,6 +17,8 @@ dependencies = [
 ui = ["gradio==5.9.1", "fastapi==0.115.6", "pydantic==2.10.4"]
 auto-mask = ["rembg[cpu]==2.0.61", "opencv-python-headless==4.10.0.84"]
 dev = ["pytest>=8,<9"]
+prep = ["opencv-python-headless==4.10.0.84"]
+eval = ["lpips==0.1.4"]
 
 [project.scripts]
 material-transfer = "material_transfer.cli:main"

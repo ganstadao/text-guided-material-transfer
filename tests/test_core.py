@@ -16,7 +16,10 @@ from material_transfer.records import read_manifest, save_run
 def test_methods_and_invalid_settings():
     assert [(TransferConfig(method=m).segment_reference, TransferConfig(method=m).fuse_attention)
             for m in 'ABCD'] == [(False, False), (True, False), (False, True), (True, True)]
-    for settings in ({'method': ''}, {'width': 65}, {'device': 'cpu'}, {'steps': 1}, {'segmentation_threshold': 1}):
+    for settings in ({'method': ''}, {'width': 65}, {'device': 'cpu'}, {'steps': 1},
+                     {'segmentation_threshold': 1}, {'cpu_offload': 'invalid'},
+                     {'device': 'cpu', 'dtype': 'float32', 'cpu_offload': 'sequential'},
+                     {'vae_tile_size': 512}, {'vae_tiling': True, 'vae_tile_size': 65}, {'batch_size': 0}):
         with pytest.raises(ValueError):
             TransferConfig(**settings)
 

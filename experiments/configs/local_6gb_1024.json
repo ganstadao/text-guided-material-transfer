@@ -1,0 +1,14 @@
+{
+  "method": "A",
+  "base_model": "models/local/sdxl",
+  "controlnet": "models/local/controlnet",
+  "adapter_repo": "models/local/ip-adapter",
+  "clipseg_model": "models/local/clipseg",
+  "local_files_only": true,
+  "width": 1024,
+  "height": 1024,
+  "steps": 30,
+  "cpu_offload": "sequential",
+  "vae_tiling": true,
+  "vae_tile_size": 512
+}

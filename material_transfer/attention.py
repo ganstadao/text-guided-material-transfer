@@ -32,20 +32,22 @@ def heatmap_image(mask, size):
 @torch.inference_mode()
 def fuse_reference(pipe, image, phrase, block):
     encoder = pipe.image_encoder
+    # With offloading pipe.device may be CPU while execution happens on CUDA.
+    device = pipe._execution_device
     pixels = pipe.feature_extractor(images=image, return_tensors="pt").pixel_values
-    vision = encoder.vision_model(pixels.to(device=pipe.device, dtype=encoder.dtype))
+    vision = encoder.vision_model(pixels.to(device=device, dtype=encoder.dtype))
     text = []
     for tokenizer, model in [(pipe.tokenizer, pipe.text_encoder), (pipe.tokenizer_2, pipe.text_encoder_2)]:
         tokens = tokenizer(phrase, padding="max_length", max_length=77, truncation=True, return_tensors="pt")
-        tokens = {key: value.to(pipe.device) for key, value in tokens.items()}
+        tokens = {key: value.to(device) for key, value in tokens.items()}
         text.append(model(**tokens).last_hidden_state)
     features = torch.cat(text, dim=-1).to(encoder.dtype)
     # Match the original prototype: last_hidden_state from both text encoders.
     # Exclude BOS, EOS and padding; include every subword in the material phrase.
     first = pipe.tokenizer(phrase, padding="max_length", max_length=77, truncation=True, return_tensors="pt")
-    valid = first.attention_mask.bool().to(pipe.device)
+    valid = first.attention_mask.bool().to(device)
     valid[:, 0] = False
-    valid &= first.input_ids.to(pipe.device) != pipe.tokenizer.eos_token_id
+    valid &= first.input_ids.to(device) != pipe.tokenizer.eos_token_id
     hidden = vision.last_hidden_state
     mask = material_attention_mask(block.attn2, hidden, features, valid)
     fused = block(hidden_states=hidden, encoder_hidden_states=features) * mask

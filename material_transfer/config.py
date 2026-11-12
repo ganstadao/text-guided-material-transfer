@@ -18,6 +18,10 @@ class TransferConfig:
     device: str = "cuda"
     dtype: str = "float16"
     local_files_only: bool = False
+    cpu_offload: str = "none"
+    vae_tiling: bool = False
+    vae_tile_size: int | None = None
+    batch_size: int = 1
     width: int = 1024
     height: int = 1024
     steps: int = 30
@@ -31,6 +35,17 @@ class TransferConfig:
     negative_prompt: str = "monochrome, lowres, bad anatomy, worst quality, low quality"
 
     def __post_init__(self):
+        if not isinstance(self.batch_size, int) or self.batch_size < 1:
+            raise ValueError('batch_size must be a positive integer')
+        if self.vae_tile_size is not None and (
+            not self.vae_tiling or not isinstance(self.vae_tile_size, int)
+            or self.vae_tile_size < 64 or self.vae_tile_size % 8
+        ):
+            raise ValueError("vae_tile_size requires vae_tiling and a multiple of 8 >= 64")
+        if self.cpu_offload not in {"none", "model", "sequential"}:
+            raise ValueError("cpu_offload must be none, model or sequential")
+        if self.cpu_offload != "none" and not self.device.startswith("cuda"):
+            raise ValueError("CPU offloading requires a CUDA device")
         if self.method not in "ABCD" or len(self.method) != 1:
             raise ValueError("method must be A, B, C or D")
         if self.device != "cpu" and self.device != "cuda" and not self.device.startswith("cuda:"):

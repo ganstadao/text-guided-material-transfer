@@ -1,0 +1,7 @@
+pair_id,target,exemplar,mask,depth,material_prompt,seed
+clean_01,targets/REPLACE_01.png,exemplars/REPLACE_01.png,masks/REPLACE_01.png,depths/REPLACE_01.png,REPLACE_MATERIAL,42
+clean_02,targets/REPLACE_02.png,exemplars/REPLACE_02.png,masks/REPLACE_02.png,depths/REPLACE_02.png,REPLACE_MATERIAL,42
+clean_03,targets/REPLACE_03.png,exemplars/REPLACE_03.png,masks/REPLACE_03.png,depths/REPLACE_03.png,REPLACE_MATERIAL,42
+clutter_01,targets/REPLACE_04.png,exemplars/REPLACE_04.png,masks/REPLACE_04.png,depths/REPLACE_04.png,REPLACE_MATERIAL,42
+clutter_02,targets/REPLACE_05.png,exemplars/REPLACE_05.png,masks/REPLACE_05.png,depths/REPLACE_05.png,REPLACE_MATERIAL,42
+clutter_03,targets/REPLACE_06.png,exemplars/REPLACE_06.png,masks/REPLACE_06.png,depths/REPLACE_06.png,REPLACE_MATERIAL,42

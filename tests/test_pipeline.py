@@ -16,6 +16,64 @@ class RecordingPipe:
         return SimpleNamespace(images=[kwargs['image']])
 
 
+@pytest.mark.parametrize('mode', ['none', 'model', 'sequential'])
+@pytest.mark.parametrize('tile_size', [None, 512])
+def test_offload_loading_never_moves_entire_pipe_to_cuda(mode, tile_size, monkeypatch):
+    import diffusers
+    import transformers
+    calls = []
+    model = SimpleNamespace(eval=lambda: None)
+    pipe = SimpleNamespace(**{name: model for name in
+        ('unet', 'image_encoder', 'text_encoder', 'text_encoder_2', 'controlnet')})
+    pipe.vae = SimpleNamespace(eval=lambda: None, enable_slicing=lambda: None)
+    pipe.vae_scale_factor = 8
+    pipe.load_ip_adapter = lambda *a, **kw: None
+    pipe.set_ip_adapter_scale = lambda *a: None
+    pipe.to = lambda device: calls.append(('to', device))
+    pipe.enable_vae_tiling = lambda: calls.append(('tiling',))
+    pipe.enable_model_cpu_offload = lambda **kw: calls.append(('model', kw['gpu_id']))
+    pipe.enable_sequential_cpu_offload = lambda **kw: calls.append(('sequential', kw['gpu_id']))
+    monkeypatch.setattr(torch.cuda, 'is_available', lambda: True)
+    monkeypatch.setattr(diffusers.ControlNetModel, 'from_pretrained', lambda *a, **kw: model)
+    monkeypatch.setattr(transformers.CLIPVisionModelWithProjection, 'from_pretrained', lambda *a, **kw: model)
+    monkeypatch.setattr(diffusers.StableDiffusionXLControlNetInpaintPipeline, 'from_pretrained', lambda *a, **kw: pipe)
+    engine = MaterialTransfer(TransferConfig(cpu_offload=mode, vae_tiling=True,
+                                           vae_tile_size=tile_size, device='cuda:2'))
+    engine.load()
+    engine.load()  # Loading twice must not install hooks twice.
+    assert calls == [('tiling',), ('to', 'cuda:2') if mode == 'none' else (mode, 2)]
+    if mode == 'sequential':
+        assert 'vae' in pipe._exclude_from_cpu_offload
+    if tile_size is not None:
+        assert pipe.vae.tile_sample_min_size == 512
+        assert pipe.vae.tile_latent_min_size == 64
+
+
+def test_tiled_vae_preserves_output_resolution(monkeypatch):
+    from diffusers import AutoencoderKL
+    model = AutoencoderKL(block_out_channels=(8, 16), norm_num_groups=4,
+        down_block_types=('DownEncoderBlock2D',) * 2,
+        up_block_types=('UpDecoderBlock2D',) * 2, sample_size=128).eval()
+    model.enable_tiling()
+    model.tile_sample_min_size, model.tile_latent_min_size = 64, 32
+    encoder_sizes, decoder_sizes = [], []
+    encode, decode = model.encoder.forward, model.decoder.forward
+    def encode_tile(x):
+        encoder_sizes.append(x.shape[-2:])
+        return encode(x)
+    def decode_tile(x, *args, **kwargs):
+        decoder_sizes.append(x.shape[-2:])
+        return decode(x, *args, **kwargs)
+    monkeypatch.setattr(model.encoder, 'forward', encode_tile)
+    monkeypatch.setattr(model.decoder, 'forward', decode_tile)
+    with torch.inference_mode():
+        latent = model.encode(torch.zeros(1, 3, 128, 128)).latent_dist.mode()
+        result = model.decode(latent).sample
+    assert result.shape == (1, 3, 128, 128) and torch.isfinite(result).all()
+    assert len(encoder_sizes) > 1 and max(max(size) for size in encoder_sizes) <= 64
+    assert len(decoder_sizes) > 1 and max(max(size) for size in decoder_sizes) <= 32
+
+
 @pytest.mark.parametrize('method', list('ABCD'))
 def test_four_paths_and_shared_inputs(method, monkeypatch):
     cfg = TransferConfig(method=method, device='cpu', dtype='float32', width=64, height=64)

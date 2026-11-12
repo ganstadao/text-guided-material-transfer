@@ -60,6 +60,21 @@ def main(argv=None):
         print(f"Validated {len(pairs)} pairs for method {cfg.method}; no models loaded")
         return 0
     engine = MaterialTransfer(cfg)
+    if args.command == 'batch' and cfg.batch_size > 1:
+        for start in range(0, len(pairs), cfg.batch_size):
+            chunk = pairs[start:start+cfg.batch_size]
+            samples = []
+            for pair in chunk:
+                target = load_rgb(pair.target)
+                samples.append(dict(target=target, exemplar=load_rgb(pair.exemplar),
+                    material_prompt=pair.material_prompt,
+                    target_mask=load_mask(pair.mask, target.size) if pair.mask else None,
+                    depth=depth_image(pair.depth, target.size) if pair.depth else None,
+                    seed=pair.seed if pair.seed is not None else cfg.seed))
+            for pair, (artifacts, timings), sample in zip(chunk, engine.run_many(samples), samples):
+                record = {key: str(value.resolve()) if isinstance(value, Path) else value for key, value in asdict(pair).items()}
+                print(save_run(args.output / pair.pair_id, artifacts, replace(cfg, seed=sample['seed']), timings, record))
+        return 0
     for pair in pairs:
         engine.config = replace(cfg, seed=pair.seed if pair.seed is not None else cfg.seed)
         target = load_rgb(pair.target)
